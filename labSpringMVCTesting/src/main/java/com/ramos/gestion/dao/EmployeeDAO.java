@@ -1,7 +1,7 @@
 package com.ramos.gestion.dao;
 
 import java.util.List;
-
+import com.ramos.gestion.exception.LoginException;
 import com.ramos.gestion.exception.DAOException;
 import com.ramos.gestion.exception.EmptyResultException;
 import com.ramos.gestion.model.Employee;
@@ -23,5 +23,7 @@ public interface EmployeeDAO {
 	List<Employee> findEmployeesByName(String name) throws DAOException, EmptyResultException;
 	
 	List<Employee> findEmployeesByLastName(String lastname) throws DAOException, EmptyResultException;
+	
+	Employee validate(String idEmployee, String clave) throws LoginException, DAOException;
 
 }

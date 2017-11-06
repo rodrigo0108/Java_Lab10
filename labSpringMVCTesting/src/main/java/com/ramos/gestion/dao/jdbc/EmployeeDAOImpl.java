@@ -7,6 +7,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import com.ramos.gestion.exception.LoginException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -197,5 +199,34 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 	
 
 	}
+	
+	public Employee validate(String login, String pwd) throws LoginException, DAOException {
+		
+		logger.info("validate(): login: " + login + ", clave: " + pwd);
+	
+		if ("".equals(login) && "".equals(pwd)) {
+			throw new LoginException("Login and password incorrect");
+		}
+	
+		String query = "SELECT login, password, employee_id, first_name, last_name, salary, department_id  "
+				+ " FROM employees WHERE login=? AND password=?";
+	
+		Object[] params = new Object[] { login, pwd };
+	
+		try {
+	
+			Employee emp = (Employee) jdbcTemplate.queryForObject(query, params, new EmployeeMapper());
+			//
+			return emp;
+	
+		} catch (EmptyResultDataAccessException e) {
+			logger.info("Employee y/o clave incorrecto");
+			throw new LoginException();
+		} catch (Exception e) {
+			logger.info("Error: " + e.getMessage());
+			throw new DAOException(e.getMessage());
+		}
+	}
+
 
 }
