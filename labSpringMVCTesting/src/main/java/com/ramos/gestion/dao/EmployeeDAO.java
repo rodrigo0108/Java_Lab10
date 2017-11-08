@@ -24,6 +24,8 @@ public interface EmployeeDAO {
 	
 	List<Employee> findEmployeesByLastName(String lastname) throws DAOException, EmptyResultException;
 	
+	List<Employee> findEmployeesByNameLastNameDepartment(String name,String lastname,String dptId) throws DAOException, EmptyResultException;
+	
 	Employee validate(String idEmployee, String clave) throws LoginException, DAOException;
 
 }

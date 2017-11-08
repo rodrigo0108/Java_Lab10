@@ -46,31 +46,7 @@ public class EmployeeController {
 
 		return "admin/emp/list";
 	}
-	/*
-	@PostMapping("/admin/emp/list")
-	public ModelAndView login(@ModelAttribute("SpringWeb") Employee employee, ModelMap model) {
 
-			logger.info("login()");
-			logger.info(employee.toString());
-			
-			ModelAndView modelAndView = null;
-			
-			try {
-				Employee emp = securityService.validate(employee.getLogin(), employee.getPassword());
-				logger.info(emp.toString());
-				modelAndView = new ModelAndView("redirect:/admin/menu", "command", emp);
-			} catch (LoginException e) {
-				// TODO Auto-generated catch block
-				model.addAttribute("message", "Usuario y/o clave incorrectos");
-				modelAndView = new ModelAndView("login", "command", new Employee());
-			} catch (DAOException e) {
-				// TODO Auto-generated catch block
-				model.addAttribute("message", e.getMessage());
-				modelAndView = new ModelAndView("login", "command", new Employee());
-			}
-
-			return modelAndView;
-			}*/
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
@@ -90,6 +66,47 @@ public class EmployeeController {
 
 		return modelAndView;
 	}
+	
+	@GetMapping("/admin/emp/{action}/{employee_id}")
+	public ModelAndView form(@PathVariable String action, @PathVariable int employee_id, ModelMap model) {
+
+		// action = {"editform","deleteform"}
+		logger.info("action = " + action);
+		ModelAndView modelAndView = null;
+
+		try {
+			Employee emp = employeeService.find(employee_id);
+			logger.info(emp.toString());
+			modelAndView = new ModelAndView("admin/emp/" + action, "command", emp);
+		} catch (Exception e) {
+			model.addAttribute("message", e.getMessage());
+			modelAndView = new ModelAndView("admin/emp/" + action, "command", new Employee());
+		}
+
+		return modelAndView;
+	}
+	
+	@PostMapping("/admin/emp/editsave")
+	public ModelAndView editsave(@ModelAttribute("SpringWeb") Employee emp, ModelMap model) {
+
+		
+		logger.info("emp = " + emp);
+		
+		ModelAndView modelAndView = null;
+
+		try {
+			employeeService.update(emp.getLogin(), emp.getPassword(), emp.getFirstname(), emp.getLastname(),
+					emp.getSalary(), -1);
+
+			modelAndView = new ModelAndView("redirect:/admin/emp/list");
+		} catch (Exception e) {
+			model.addAttribute("message", e.getMessage());
+			modelAndView = new ModelAndView("redirect:/admin/emp/list");
+		}
+
+		return modelAndView;
+	}
+
 	
 }
 
