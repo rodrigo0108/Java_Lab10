@@ -106,6 +106,54 @@ public class EmployeeController {
 
 		return modelAndView;
 	}
+	
+	@PostMapping("/admin/emp/delete")
+	public ModelAndView delete(@ModelAttribute("SpringWeb") Employee emp, ModelMap model) {
+
+		ModelAndView modelAndView = null;
+
+		try {
+			employeeService.delete(emp.getLogin());
+			modelAndView = new ModelAndView("redirect:/admin/emp/list");
+		} catch (Exception e) {
+			model.addAttribute("message", e.getMessage());
+			modelAndView = new ModelAndView("redirect:/admin/emp/list");
+		}
+
+		return modelAndView;
+	}
+	
+	@GetMapping("/admin/emp/createform")
+	public ModelAndView createform() {
+
+		Employee emp = new Employee();
+
+		ModelAndView modelAndView = new ModelAndView("admin/emp/createform", "command", emp);
+
+		return modelAndView;
+	}
+	
+	@PostMapping("/admin/emp/create")
+	public ModelAndView create(@ModelAttribute("SpringWeb") Employee emp, ModelMap model) {
+
+		
+		ModelAndView modelAndView = null;
+		
+		try {
+			employeeService.create(emp.getLogin(), emp.getPassword(), emp.getFirstname(), emp.getLastname(),
+					emp.getSalary(), 12);
+			logger.info("new Employee login = " + emp.getLogin());
+			modelAndView = new ModelAndView("redirect:/admin/emp/list");
+		} catch (DAOException e) {
+			logger.error(e.getMessage());
+			model.addAttribute("message", e.getMessage());
+			modelAndView = new ModelAndView("admin/emp/createform","command", emp);
+		}
+
+		return modelAndView;
+	}
+
+
 
 	
 }
